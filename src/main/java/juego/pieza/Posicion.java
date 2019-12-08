@@ -11,8 +11,10 @@ public class Posicion implements Serializable {
     private int columna;
 
     /**
-     * Crea un objeto POsicion a partir de dos parametros que representan las coordenadas
-     * @param fila entero que representa la fila o renglon de la pieza
+     * Crea un objeto POsicion a partir de dos parametros que representan las
+     * coordenadas
+     * 
+     * @param fila    entero que representa la fila o renglon de la pieza
      * @param columna entero que representa la columna de la pieza
      */
     public Posicion(int fila, int columna) {
@@ -22,21 +24,26 @@ public class Posicion implements Serializable {
 
     /**
      * Obtiene la fila
+     * 
      * @return la fila
      */
     public int obtenerFila() {
         return fila;
     }
+
     /**
-     * Obtiene la columna 
+     * Obtiene la columna
+     * 
      * @return la columna
      */
     public int obtenerColumna() {
         return columna;
     }
+
     /**
-     * Compara si dos posiciones son la misma, teniendo en cuenta lo siguiente:
-     * (a, b) = (c, d) si y solo si a = c y b = d
+     * Compara si dos posiciones son la misma, teniendo en cuenta lo siguiente: (a,
+     * b) = (c, d) si y solo si a = c y b = d
+     * 
      * @return Verdadero si son iguales, false en caso contrario
      */
     @Override
@@ -50,12 +57,27 @@ public class Posicion implements Serializable {
         Posicion otra = (Posicion) obj;
         return fila == otra.fila && columna == otra.columna;
     }
+
     /**
      * Devuelve el par ordenado que representa la posicion.
+     * 
      * @return String con el par ordenado de la forma (fila, columna)
      */
     public String toString() {
         return "(" + fila + ", " + columna + ")";
+    }
+
+    /**
+     * Crea una posicion a partir de mover la posicion de la cual es llamada n filas
+     * y m columnas
+     * 
+     * @param fila    numero de filas a desplazar, negativo para disminuir
+     * @param columna numero de columnas a desplazar, negativo para disminuir
+     * @return posicion resultado de mover la posicion que la llama un numero de
+     *         filas y columnas
+     */
+    public Posicion moverPosicion(int fila, int columna) {
+        return new Posicion(this.fila + fila, this.columna + columna);
     }
 
 }
