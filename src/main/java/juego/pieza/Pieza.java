@@ -94,6 +94,24 @@ public abstract class Pieza implements Serializable {
      */
     public abstract void rotarSentidoAntihorario();
     /**
+     * Mueve un luga a la izquierda la pieza en caso de que sea posible
+     */
+    public void moverIzquierda() {
+        if (this.puedeMoverse(this.posicion.moverPosicion(0, -1))) {
+            this.posicion = this.posicion.moverPosicion(0, -1);
+        }
+    }
+
+    /**
+     * Mueve un lugar a la derecha la pieza en caso de que sea posible
+     */
+    public void moverDerecha() {
+        if (this.puedeMoverse(this.posicion.moverPosicion(0, 1))) {
+            this.posicion = this.posicion.moverPosicion(0, 1);
+        }
+    }
+
+    /**
      * Determina si los bloques pueden colocarse en el tablero en el indice dado
      * @param estructuraPieza Matriz de bloques
      * @param indice indice respecto al tablero de la matriz
@@ -108,6 +126,15 @@ public abstract class Pieza implements Serializable {
             }
         }
         return true;
+    }
+
+    /**
+     * Determina si los bloques pueden colocarse en el tablero en el indice dado, toma los bloques actuales de la pieza para esto
+     * @param indice indice respecto al tablero de la matriz
+     * @return Verdadero si se puede colocar la matriz
+     */
+    public boolean puedeMoverse(Posicion indice) {
+        return this.puedeMoverse(this.matriz, indice);
     }
 
 }
