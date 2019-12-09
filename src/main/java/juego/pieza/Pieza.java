@@ -12,7 +12,7 @@ public abstract class Pieza implements Serializable {
         private int estado;
 
         protected EstadoPieza(int estado) {
-            this.estado = estado % 4;
+            this.estado = (estado == -1) ? 3 : (estado == 4) ? 0 : estado;
         }
 
         protected EstadoPieza() {
