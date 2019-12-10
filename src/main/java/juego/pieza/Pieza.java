@@ -85,6 +85,22 @@ public abstract class Pieza implements Serializable {
     }
 
     /**
+     * Obtiene el numero de filas de la matriz que representa a la pieza
+     * @return numero de filas de la matriz
+     */
+    public int obtenerFilas() {
+        return this.matriz.length;
+    }
+
+    /**
+     * Obtiene el numero de columnas de la matriz
+     * @return numero de columnas de la matriz
+     */
+    public int obtenerColumnas() {
+        return this.matriz[0].length;
+    }
+
+    /**
      * Rota la pieza hacia la izquierda
      */
     public abstract void rotarSentidoHorario();
