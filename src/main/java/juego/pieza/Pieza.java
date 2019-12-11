@@ -143,7 +143,6 @@ public abstract class Pieza implements Serializable {
         }
         return true;
     }
-
     /**
      * Determina si los bloques pueden colocarse en el tablero en el indice dado, toma los bloques actuales de la pieza para esto
      * @param indice indice respecto al tablero de la matriz
@@ -152,5 +151,4 @@ public abstract class Pieza implements Serializable {
     public boolean puedeMoverse(Posicion indice) {
         return this.puedeMoverse(this.matriz, indice);
     }
-
 }
