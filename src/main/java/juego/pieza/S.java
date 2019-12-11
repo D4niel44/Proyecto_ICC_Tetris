@@ -1,6 +1,6 @@
 package juego.pieza;
 
-public class S extends Pieza {
+public class S extends Pieza 
 
 	private static final Bloque[][][] estadoPieza = new Bloque[][][]{
         {{null, new Bloque(Color.VERDE), new Bloque(Color.VERDE)},

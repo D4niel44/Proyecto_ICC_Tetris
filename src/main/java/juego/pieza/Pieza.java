@@ -12,7 +12,7 @@ public abstract class Pieza implements Serializable {
         private int estado;
 
         protected EstadoPieza(int estado) {
-            this.estado = estado % 4;
+            this.estado = (estado == -1) ? 3 : (estado == 4) ? 0 : estado;
         }
 
         protected EstadoPieza() {
@@ -85,6 +85,22 @@ public abstract class Pieza implements Serializable {
     }
 
     /**
+     * Obtiene el numero de filas de la matriz que representa a la pieza
+     * @return numero de filas de la matriz
+     */
+    public int obtenerFilas() {
+        return this.matriz.length;
+    }
+
+    /**
+     * Obtiene el numero de columnas de la matriz
+     * @return numero de columnas de la matriz
+     */
+    public int obtenerColumnas() {
+        return this.matriz[0].length;
+    }
+
+    /**
      * Rota la pieza hacia la izquierda
      */
     public abstract void rotarSentidoHorario();
@@ -93,6 +109,24 @@ public abstract class Pieza implements Serializable {
      * Rota la pieza hacia la derecha
      */
     public abstract void rotarSentidoAntihorario();
+    /**
+     * Mueve un luga a la izquierda la pieza en caso de que sea posible
+     */
+    public void moverIzquierda() {
+        if (this.puedeMoverse(this.posicion.moverPosicion(0, -1))) {
+            this.posicion = this.posicion.moverPosicion(0, -1);
+        }
+    }
+
+    /**
+     * Mueve un lugar a la derecha la pieza en caso de que sea posible
+     */
+    public void moverDerecha() {
+        if (this.puedeMoverse(this.posicion.moverPosicion(0, 1))) {
+            this.posicion = this.posicion.moverPosicion(0, 1);
+        }
+    }
+
     /**
      * Determina si los bloques pueden colocarse en el tablero en el indice dado
      * @param estructuraPieza Matriz de bloques
@@ -109,5 +143,12 @@ public abstract class Pieza implements Serializable {
         }
         return true;
     }
-
+    /**
+     * Determina si los bloques pueden colocarse en el tablero en el indice dado, toma los bloques actuales de la pieza para esto
+     * @param indice indice respecto al tablero de la matriz
+     * @return Verdadero si se puede colocar la matriz
+     */
+    public boolean puedeMoverse(Posicion indice) {
+        return this.puedeMoverse(this.matriz, indice);
+    }
 }
