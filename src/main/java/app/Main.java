@@ -7,7 +7,7 @@ import juego.Tablero;
 import juego.pieza.Color;
 import juego.pieza.Pieza;
 import juego.pieza.Posicion;
-import juego.puntuacion.Puntuaciones;
+import juego.puntuacion.TopPuntuaciones;
 
 /**
  * Clase principal de la parte gráfica del juego
@@ -17,7 +17,7 @@ public class Main extends PApplet {
     private Tablero tablero;
     boolean estaReproduciendo;
     SoundFile musica;
-    String[][] topPuntuaciones;
+    TopPuntuaciones top;
     final int retardo = 500;
     int tiempo;
 
@@ -48,18 +48,12 @@ public class Main extends PApplet {
         estaReproduciendo = true;
         musica.loop();
         tablero = Tablero.obtenerInstancia();
-        try {
-            topPuntuaciones = Puntuaciones.topPuntuaciones("/puntuaciones.csv");
-        } catch (IOException e) {
-            topPuntuaciones = new String[10][];
-            String[] puntuacion = new String[] { "", "" };
-            for (int i = 0; i < topPuntuaciones.length; i++) {
-                topPuntuaciones[i] = puntuacion;
-            }
+        try (var in = new ObjectInputStream(new FileInputStream("puntuaciones"))) {
+            top = (TopPuntuaciones) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            top = TopPuntuaciones.obtenerInstancia();
         }
         tiempo = 0;
-        //frameRate(30);
-
     }
 
     /**
@@ -67,19 +61,15 @@ public class Main extends PApplet {
      */
     @Override
     public void draw() {
-
         // Cierra el juego si este se acaba
         if (tablero.obtenerEstadoJuego()) {
             exit();
         }
-
         // Evalua si la pieza debe caer o no
-        if (millis() > tiempo + retardo ) {
+        if (millis() > tiempo + retardo) {
             tablero.caerPieza();
             tiempo = millis();
         }
-        
-
         // Dibuja los limites del tablero
         background(0x000000);
         stroke(0xffffffff);
@@ -157,7 +147,11 @@ public class Main extends PApplet {
         fill(0xff008080);
         text("top Puntuaciones", 500, 500);
         for (int i = 0; i < 10; i++) {
-            text((i + 1) + " " + topPuntuaciones[i][0] + ": " + topPuntuaciones[i][0], 500, i * 15 + 515);
+            try {
+            text((i + 1) + ": " + top.obtenerPuntuacion(i), 500, i * 15 + 515);
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
 
         // Dibuja puntuacion del juego actual
@@ -170,7 +164,8 @@ public class Main extends PApplet {
      * ARRIBA rota a la derecha FLECHA ABAJO realiza un soft-drop FLECHA DERECHA se
      * mueve un bloque a la derecha FLECHA IZQUIERDA se mueve un bloque a la
      * izquierda C guarda/cambia por la guardada la pieza actual Z rota a la
-     * izquierda, P para reproducir/pausar la musica SPACE para que la pieza se mueva hasta la posicion donde pueda caer(hardDrop)
+     * izquierda, P para reproducir/pausar la musica SPACE para que la pieza se
+     * mueva hasta la posicion donde pueda caer(hardDrop)
      */
     @Override
     public void keyPressed() {
@@ -223,8 +218,12 @@ public class Main extends PApplet {
     public void exit() {
         musica.stop();
         try {
-            Puntuaciones.guardarPuntuacion(getClass().getResource("/puntuaciones.csv").getPath(),
-                    new String[] { "", Integer.toString(tablero.obtenerPuntuacion()) });
+            top.añadirPuntuacion(tablero.obtenerPuntuacion());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try (var out = new ObjectOutputStream(new FileOutputStream("puntuaciones"))) {
+            out.writeObject(top);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
