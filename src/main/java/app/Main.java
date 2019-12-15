@@ -58,7 +58,7 @@ public class Main extends PApplet {
             }
         }
         tiempo = 0;
-        frameRate(30);
+        //frameRate(30);
 
     }
 
@@ -112,6 +112,20 @@ public class Main extends PApplet {
                 }
             }
         }
+        // Dibuja la pieza fantasma
+        Pieza piezaFantasma = tablero.obtenerPiezaActiva().piezaFantasma();
+        for (int i = 0; i < piezaFantasma.obtenerFilas(); i++) {
+            for (int j = 0; j < piezaFantasma.obtenerFilas(); j++) {
+                if (piezaFantasma.obtenerPosicion().obtenerFila() > 19) {
+                    if (piezaFantasma.obtenerBloque(new Posicion(i, j)) != null) {
+                        fill(colorRGB(piezaFantasma.obtenerBloque(new Posicion(i, j)).obtenerColor()) - 0xb0000000);
+                        int columna = piezaFantasma.obtenerPosicion().obtenerColumna();
+                        int fila = piezaFantasma.obtenerPosicion().obtenerFila();
+                        rect((columna + j) * 40 + 50, (fila - 20 + i) * 40 + 50, 40, 40);
+                    }
+                }
+            }
+        }
         // dibuja la siguiente pieza
         fill(0xff008080);
         text("Siguiente Pieza", 500, 80);
@@ -156,7 +170,7 @@ public class Main extends PApplet {
      * ARRIBA rota a la derecha FLECHA ABAJO realiza un soft-drop FLECHA DERECHA se
      * mueve un bloque a la derecha FLECHA IZQUIERDA se mueve un bloque a la
      * izquierda C guarda/cambia por la guardada la pieza actual Z rota a la
-     * izquierda, P para reproducir/pausar la musica
+     * izquierda, P para reproducir/pausar la musica SPACE para que la pieza se mueva hasta la posicion donde pueda caer(hardDrop)
      */
     @Override
     public void keyPressed() {
@@ -194,6 +208,10 @@ public class Main extends PApplet {
                     musica.play();
                     estaReproduciendo = true;
                 }
+                break;
+            case ' ':
+                tablero.caidaFuerte();
+                break;
             }
         }
     }

@@ -213,4 +213,12 @@ public class Tablero implements Serializable {
 
     }
 
+    /**
+     * Realiza un hardDrop
+     */
+    public void caidaFuerte() {
+        piezaActiva = piezaActiva.piezaFantasma(); // le asigna a la piezaActiva su piezaFantasma 
+        caerPieza(); // hace que la pieza caiga para que esta se bloquee
+    }
+
 }

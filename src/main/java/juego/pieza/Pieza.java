@@ -188,4 +188,47 @@ public abstract class Pieza implements Serializable {
     public boolean puedeMoverse(Posicion indice) {
         return this.puedeMoverse(this.matriz, indice);
     }
+
+    /**
+     * Devuelve la pieza fantasma relacionada a la pieza
+     * 
+     * @return pieza fantasma
+     */
+    public Pieza piezaFantasma() {
+        // Evalua hasta donde puede caer la pieza actual
+        int i = 0;
+        while (this.puedeMoverse(this.obtenerPosicion().moverPosicion(i + 1, 0))) {
+            i++;
+        }
+        // Crea una nueva pieza con la posicion hasta la cual puede caer la pieza actual
+        Pieza piezaFantasma;
+        switch (this.getClass().getSimpleName()) {
+        case "I":
+            piezaFantasma = new I(this.obtenerPosicion().moverPosicion(i, 0));
+            break;
+        case "L":
+            piezaFantasma = new L(this.obtenerPosicion().moverPosicion(i, 0));
+            break;
+        case "J":
+            piezaFantasma = new J(this.obtenerPosicion().moverPosicion(i, 0));
+            break;
+        case "O":
+            piezaFantasma = new O(this.obtenerPosicion().moverPosicion(i, 0));
+            break;
+        case "S":
+            piezaFantasma = new S(this.obtenerPosicion().moverPosicion(i, 0));
+            break;
+        case "Z":
+            piezaFantasma = new Z(this.obtenerPosicion().moverPosicion(i, 0));
+            break;
+        case "T":
+            piezaFantasma = new T(this.obtenerPosicion().moverPosicion(i, 0));
+            break;
+        default:
+            piezaFantasma = null;
+        }
+        piezaFantasma.matriz = this.matriz;
+        piezaFantasma.estado = this.estado;
+        return piezaFantasma;
+    }
 }
