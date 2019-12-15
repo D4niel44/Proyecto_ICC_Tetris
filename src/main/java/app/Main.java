@@ -15,10 +15,11 @@ import juego.puntuacion.Puntuaciones;
 public class Main extends PApplet {
 
     private Tablero tablero;
-    private boolean caer;
     boolean estaReproduciendo;
     SoundFile musica;
     String[][] topPuntuaciones;
+    final int retardo = 500;
+    int tiempo;
 
     /**
      * inicia la aplicacion
@@ -47,7 +48,6 @@ public class Main extends PApplet {
         estaReproduciendo = true;
         musica.loop();
         tablero = Tablero.obtenerInstancia();
-        caer = true;
         try {
             topPuntuaciones = Puntuaciones.topPuntuaciones("/puntuaciones.csv");
         } catch (IOException e) {
@@ -57,7 +57,8 @@ public class Main extends PApplet {
                 topPuntuaciones[i] = puntuacion;
             }
         }
-        frameRate(2);
+        tiempo = 0;
+        frameRate(30);
 
     }
 
@@ -73,11 +74,12 @@ public class Main extends PApplet {
         }
 
         // Evalua si la pieza debe caer o no
-        if (caer) {
+        if (millis() > tiempo + retardo ) {
             tablero.caerPieza();
-        } else {
-            caer = true;
+            tiempo = millis();
         }
+        
+
         // Dibuja los limites del tablero
         background(0x000000);
         stroke(0xffffffff);
@@ -194,8 +196,6 @@ public class Main extends PApplet {
                 }
             }
         }
-        caer = false;
-        redraw(); // actualiza la pantalla
     }
 
     /**
