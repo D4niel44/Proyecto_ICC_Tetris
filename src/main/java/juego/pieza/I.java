@@ -4,7 +4,9 @@ package juego.pieza;
  * Clase de la pieza I
  */
 public class I extends Pieza {
-
+    /*
+     *Constante con la matriz de bloques para cada uno de los estados de la pieza 
+     */
     private static final Bloque[][][] estadoPieza = new Bloque[][][]{
         {{null, null, null, null},
          {new Bloque(Color.CYAN), new Bloque(Color.CYAN), new Bloque(Color.CYAN), new Bloque(Color.CYAN)},
@@ -28,7 +30,10 @@ public class I extends Pieza {
         }
     };
 
-
+    /**
+     * Crea una nueva pieza con indice en al posicion dada
+     * @param posicion posicion inicial de la pieza
+     */
     public I(Posicion posicion) {
         super(posicion);
         matriz = estadoPieza[estado.obtenerEstado()];
@@ -38,64 +43,68 @@ public class I extends Pieza {
     public void rotarSentidoHorario() {
         Bloque[][] matrizRotada = estadoPieza[estado.siguienteEstado().obtenerEstado()];
         boolean puedeRotar = false;
-        int modificadorDireccionColumnas = -3;
-        int movimientoFilas = 1;
-        int movimientoColumnas = -1;
-        // maneja los wall kicks
-        while (modificadorDireccionColumnas <= 1 && !puedeRotar) {
-            modificadorDireccionColumnas += 2;
-            while (movimientoColumnas <= 2 && !puedeRotar) {
-                movimientoColumnas++;
-                if (this.puedeMoverse(matrizRotada,
-                        posicion.moverPosicion(0, modificadorDireccionColumnas * movimientoColumnas))) {
-                    puedeRotar = true;
-                }
-            }
-        }
-        // maneja los floor kicks en caso de que no se halla podido rotar previamente
-        while (movimientoFilas >= -2 && !puedeRotar) {
-            movimientoFilas--;
-            if (this.puedeMoverse(matrizRotada,
-                    posicion.moverPosicion(0, modificadorDireccionColumnas * movimientoFilas))) {
-                puedeRotar = true;
-            }
+        int movimientoFilas = 0;
+        int movimientoColumnas = 0;
+        if (this.puedeMoverse(matrizRotada, this.obtenerPosicion())) {
+            puedeRotar = true;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(0, -1))) {
+            puedeRotar = true;
+            movimientoColumnas = -1;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(0, -2))) {
+            puedeRotar = true;
+            movimientoColumnas = -2;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(0, 1))) {
+            puedeRotar = true;
+            movimientoColumnas = 1;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(0, 2))) {
+            puedeRotar = true;
+            movimientoColumnas = 2;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(-1, 0))) {
+            puedeRotar = true;
+            movimientoFilas = -1;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(-2, 0))) {
+            puedeRotar = true;
+            movimientoFilas = -2;
         }
         if (puedeRotar) {
             this.posicion = posicion.moverPosicion(movimientoFilas, movimientoColumnas);
             this.matriz = matrizRotada;
             estado = estado.siguienteEstado();
         }
+
     }
 
     public void rotarSentidoAntihorario() {
         Bloque[][] matrizRotada = estadoPieza[estado.anteriorEstado().obtenerEstado()];
         boolean puedeRotar = false;
-        int modificadorDireccionColumnas = 3;
-        int movimientoFilas = 1;
-        int movimientoColumnas = -1;
-        // maneja los wall kicks
-        while (modificadorDireccionColumnas >= -1 && !puedeRotar) {
-            modificadorDireccionColumnas -= 2;
-            while (movimientoColumnas <= 2 && !puedeRotar) {
-                movimientoColumnas++;
-                if (this.puedeMoverse(matrizRotada,
-                        posicion.moverPosicion(0, modificadorDireccionColumnas * movimientoColumnas))) {
-                    puedeRotar = true;
-                }
-            }
-        }
-        // maneja los floor kicks en caso de que no se halla podido rotar previamente
-        while (movimientoFilas >= -2 && !puedeRotar) {
-            movimientoFilas--;
-            if (this.puedeMoverse(matrizRotada,
-                    posicion.moverPosicion(0, movimientoFilas))) {
-                puedeRotar = true;
-            }
+        int movimientoFilas = 0;
+        int movimientoColumnas = 0;
+        if (this.puedeMoverse(matrizRotada, this.obtenerPosicion())) {
+            puedeRotar = true;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(0, 1))) {
+            puedeRotar = true;
+            movimientoColumnas = 1;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(0, 2))) {
+            puedeRotar = true;
+            movimientoColumnas = 2;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(0, -1))) {
+            puedeRotar = true;
+            movimientoColumnas = -1;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(0, -2))) {
+            puedeRotar = true;
+            movimientoColumnas = -2;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(-1, 0))) {
+            puedeRotar = true;
+            movimientoFilas = -1;
+        } else if (this.puedeMoverse(matrizRotada, this.obtenerPosicion().moverPosicion(-2, 0))) {
+            puedeRotar = true;
+            movimientoFilas = -2;
         }
         if (puedeRotar) {
             this.posicion = posicion.moverPosicion(movimientoFilas, movimientoColumnas);
             this.matriz = matrizRotada;
             estado = estado.anteriorEstado();
         }
+
     }
 }
