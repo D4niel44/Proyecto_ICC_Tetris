@@ -3,6 +3,9 @@ package juego;
 import juego.pieza.*;
 import java.io.Serializable;
 
+/**
+ * Clase Tablero que contiene el estado del juego
+ */
 public class Tablero implements Serializable {
 
     private int puntuacion;
@@ -17,6 +20,7 @@ public class Tablero implements Serializable {
     private Tablero() {
         bolsa = new BolsaPiezas();
         piezaActiva = bolsa.sacarPieza();
+        piezaActiva.asignarPosicion(new Posicion(20, 3));
         piezaGuardada = null;
         puedeCambiar = true;
         campoDeJuego = new Bloque[40][10];
@@ -25,6 +29,7 @@ public class Tablero implements Serializable {
 
     /**
      * obtiene la instancia de tablero
+     * 
      * @return la instancia del tablero
      */
     public static Tablero obtenerInstancia() {
@@ -33,6 +38,7 @@ public class Tablero implements Serializable {
 
     /**
      * obtiene la bolsa de piezas del tablero
+     * 
      * @return bolse de piezas del tablero
      */
     public BolsaPiezas obtenerBolsa() {
@@ -41,16 +47,27 @@ public class Tablero implements Serializable {
 
     /**
      * obtiene la pieza activa en el tablero
+     * 
      * @return la pieza que se esta moviendo en el tablero
      */
     public Pieza obtenerPiezaActiva() {
         return piezaActiva;
     }
 
+     /**
+     * obtiene la pieza guardada en el tablero
+     * 
+     * @return la pieza que esta guardada en el tablero
+     */
+    public Pieza obtenerPiezaGuardada() {
+        return piezaGuardada;
+    }
+
     /**
      * obtiene el bloque que ocupa la posicion dada en el tablero
+     * 
      * @param posicion posicion del bloque a obtener
-     * @return bloque que  se encuentra en la posicion, null en caso de no haber
+     * @return bloque que se encuentra en la posicion, null en caso de no haber
      */
     public Bloque obtenerBloque(Posicion posicion) {
         return campoDeJuego[posicion.obtenerFila()][posicion.obtenerColumna()];
@@ -58,6 +75,7 @@ public class Tablero implements Serializable {
 
     /**
      * Regresa la puntuacion del juego actual
+     * 
      * @return puntuacion
      */
     public int obtenerPuntuacion() {
@@ -73,8 +91,10 @@ public class Tablero implements Serializable {
      * @return true si no hay un bloque en la posicion
      */
     public boolean estaLibre(Posicion posicion) {
+        //int fila = posicion.obtenerFila();
+        //int columna = posicion.obtenerColumna();
         if (posicion.obtenerFila() < 0 || posicion.obtenerFila() >= 40 || posicion.obtenerColumna() < 0
-                || posicion.obtenerColumna() <= 10) {
+                || posicion.obtenerColumna() >= 10) {
             return false;
         }
         return obtenerBloque(posicion) == null;
@@ -92,15 +112,19 @@ public class Tablero implements Serializable {
             } else {
                 Pieza piezaAuxiliar = piezaActiva;
                 piezaActiva = piezaGuardada;
-                piezaActiva.asignarPosicion(piezaAuxiliar.obtenerPosicion()); // esto esta mal :(
-                piezaGuardada = piezaActiva;
+                piezaActiva.asignarPosicion(new Posicion((piezaActiva instanceof I) ? 17 : 18, 3));
+                piezaGuardada = piezaAuxiliar;
+
+                if (piezaActiva.puedeMoverse(new Posicion(20, 3))) {
+                    piezaActiva.asignarPosicion(new Posicion(20, 3));
+                }
             }
             puedeCambiar = false;
         }
     }
 
     /**
-     * desplaza un bloque hacia abajo la pieza 
+     * desplaza un bloque hacia abajo la pieza
      */
     public void caerPieza() {
         if (piezaActiva.puedeMoverse(piezaActiva.obtenerPosicion().moverPosicion(1, 0))) {
@@ -110,8 +134,8 @@ public class Tablero implements Serializable {
             for (int i = 0; i < piezaActiva.obtenerFilas(); i++) {
                 for (int j = 0; j < piezaActiva.obtenerColumnas(); j++) {
                     if (piezaActiva.obtenerBloque(new Posicion(i, j)) != null) {
-                        campoDeJuego[piezaActiva.obtenerPosicion().obtenerFila() + i]
-                                    [piezaActiva.obtenerPosicion().obtenerColumna() + j] = piezaActiva.obtenerBloque(new Posicion(i, j));
+                        campoDeJuego[piezaActiva.obtenerPosicion().obtenerFila() + i][piezaActiva.obtenerPosicion()
+                                .obtenerColumna() + j] = piezaActiva.obtenerBloque(new Posicion(i, j));
                         if (sePuedeEliminarFila(piezaActiva.obtenerPosicion().obtenerFila() + i)) {
                             eliminarFila(piezaActiva.obtenerPosicion().obtenerFila() + i);
                             contadorFilasEliminadas++;
@@ -132,6 +156,7 @@ public class Tablero implements Serializable {
 
     /**
      * revisa si alguna pieza sobrepaso los limites del tablero
+     * 
      * @return Verdadero si alguna pieza sobrepaso los limites del tablero
      */
     public boolean finalizoJuego() {
@@ -143,8 +168,13 @@ public class Tablero implements Serializable {
         return false;
     }
 
+    public boolean obtenerEstadoJuego() {
+        return juegoFinalizado;
+    }
+
     /**
      * Revisa si la fila dada esta completa
+     * 
      * @param fila la fila a revisar
      * @return verdadero si la fila se encuentra completa
      */
@@ -159,6 +189,7 @@ public class Tablero implements Serializable {
 
     /**
      * elimina la fila dada, desplaza todas las filas superiores una hacia abajo
+     * 
      * @param fila la fila a eliminar
      */
     public void eliminarFila(int fila) {
@@ -180,6 +211,14 @@ public class Tablero implements Serializable {
             piezaActiva.asignarPosicion(posicionAux);
         }
 
+    }
+
+    /**
+     * Realiza un hardDrop
+     */
+    public void caidaFuerte() {
+        piezaActiva = piezaActiva.piezaFantasma(); // le asigna a la piezaActiva su piezaFantasma 
+        caerPieza(); // hace que la pieza caiga para que esta se bloquee
     }
 
 }

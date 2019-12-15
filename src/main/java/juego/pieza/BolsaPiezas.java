@@ -4,14 +4,15 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Random;
 import java.io.Serializable;
+
 /**
- * Clase que genera las piezas aleatoriamente,
+ * Clase que genera las piezas aleatoriamente.
  * 
  */
 public class BolsaPiezas implements Serializable {
 
     private List<Pieza> bolsa;
-    
+
     /**
      * Constructor de la clase genera una bolsa con 7 piezas
      */
@@ -21,6 +22,7 @@ public class BolsaPiezas implements Serializable {
 
     /**
      * Extrae la primera pieza de la lista y la elimina de esta
+     * 
      * @return Primera pieza de la lista
      */
     public Pieza sacarPieza() {
@@ -30,8 +32,10 @@ public class BolsaPiezas implements Serializable {
         }
         return retorno;
     }
+
     /**
-     * Obtiene la primera ppieza de la lista(no la elimina)
+     * Obtiene la primera pieza de la lista(no la elimina)
+     * 
      * @return la primera pieza de la lista
      */
     public Pieza observarSiguientePieza() {
@@ -48,14 +52,14 @@ public class BolsaPiezas implements Serializable {
         piezas.add(new S(new Posicion(18, 3)));
         piezas.add(new T(new Posicion(18, 3)));
         piezas.add(new Z(new Posicion(18, 3)));
-        
+
         // Crea la lista a la cual se le añadiran las piezas en orden aleatorio
         List<Pieza> piezasOrdenadas = new LinkedList<Pieza>();
-        
+
         // Añade las piezas a la nueva lista en orden aleatorio
         Random generador = new Random();
         while (piezas.size() > 0) {
-            double aleatorio = generador.nextDouble();    
+            double aleatorio = generador.nextDouble();
             Pieza p = piezas.get((int) Math.floor(aleatorio * piezas.size()));
             piezas.remove(p);
             piezasOrdenadas.add(p);

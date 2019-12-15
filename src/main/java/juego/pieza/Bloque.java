@@ -30,6 +30,7 @@ public class Bloque implements Serializable {
 
     /**
      * Asigna un nuevo color al bloque
+     * 
      * @param color Color que se le va a asignar al bloque
      */
     public void asignarColor(Color color) {
